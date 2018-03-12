@@ -1,0 +1,47 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Eclipse #
+.settings
+.project
+.classpath
+.studio
+target
+
+# Apple #
+.DS_Store
+
+# Intellij #
+.idea
+*.iml
+*.log
+
+# Eclipse Core
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+.DS_Store
+.idea/
+backend/src/main/resources/public/
+backend/target
+frontend/node/
+frontend/node_modules/
+frontend/npm-debug.log
+backend/src/main/resources/application.properties
