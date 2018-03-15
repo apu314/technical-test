@@ -17,12 +17,15 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "colours")
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Colours implements Serializable {
 
-	private static final long serialVersionUID = -571001434988626390L;
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,21 +41,13 @@ public class Colours implements Serializable {
 	
 	@ManyToMany(fetch = FetchType.LAZY,
             cascade = {
-                CascadeType.PERSIST,
-                CascadeType.MERGE
+                //CascadeType.PERSIST,
+                //CascadeType.MERGE,
+                CascadeType.ALL
             },
             mappedBy = "colours")
 	@JsonBackReference
 	private Set<People> people = new HashSet<People>();
-	
-	@Override
-	public String toString() {
-		return "Colours {" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", isEnabled='" + isEnabled + '\'' +
-				'}';
-	}
 	
 	public Colours() {
 	}

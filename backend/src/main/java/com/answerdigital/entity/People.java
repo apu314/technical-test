@@ -8,11 +8,17 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name = "people")
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class People implements Serializable {
 	
-	private static final long serialVersionUID = -8645013977805698365L;
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,12 +46,14 @@ public class People implements Serializable {
 	@ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
-                    CascadeType.MERGE
+                    CascadeType.MERGE,
+            			// CascadeType.ALL
                 })
-	//@JsonBackReference
     @JoinTable(name = "colours_people",
             joinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "colour_id", referencedColumnName = "id") })
+	@JsonManagedReference
+	//@JsonBackReference
 	private Set<Colours> colours = new HashSet<Colours>();
 
 	
