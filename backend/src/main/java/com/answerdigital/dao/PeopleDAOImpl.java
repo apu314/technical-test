@@ -17,16 +17,16 @@ public class PeopleDAOImpl implements PeopleDAO {
 	@PersistenceContext	
 	private EntityManager entityManager;
 	
-	@Override
-	public People getPeopleById(int id) {
-		return entityManager.find(People.class, id);
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<People> getAllPeople() {
 		String hql = "FROM People as p ORDER BY p.id ASC";
 		return (List<People>) entityManager.createQuery(hql).getResultList();
+	}
+	
+	@Override
+	public People getPeopleById(int id) {
+		return entityManager.find(People.class, id);
 	}
 	
 	@Override

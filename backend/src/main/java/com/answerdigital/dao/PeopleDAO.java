@@ -13,6 +13,7 @@ public interface PeopleDAO {
     // void updatePeople(People people);
     // void deletePeople(int id);
     boolean peopleExists(String firstName, String lastName);
-    // boolean peopleColourExists(int idPeople, int idColour);
+    
+    //boolean personColourExist(int personId, int colourId);
 	
 }

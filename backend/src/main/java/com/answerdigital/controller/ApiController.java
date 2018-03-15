@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.answerdigital.dto.PeopleDTO;
+import com.answerdigital.entity.Colours;
 import com.answerdigital.entity.People;
+import com.answerdigital.service.ColoursService;
 import com.answerdigital.service.PeopleService;
 
 @RestController
@@ -29,14 +29,9 @@ public class ApiController {
 	
 	@Autowired
 	private PeopleService peopleService;
+	@Autowired
+	private ColoursService coloursService;
 	
-	
-	// @RequestMapping(value = "/people", method = RequestMethod.GET)
-	@GetMapping(value = "/people/{id}", produces = "application/json")
-	public ResponseEntity<People> getPeopleById(@PathVariable("id") String id) {
-		People people = peopleService.getPeopleById(Integer.parseInt(id));
-		return new ResponseEntity<People>(people, HttpStatus.OK);
-	}
 	
 	@GetMapping(value = "/people", produces = "application/json")
 	public ResponseEntity<List<People>> getAllPeople() {
@@ -44,13 +39,33 @@ public class ApiController {
 		return new ResponseEntity<List<People>>(list, HttpStatus.OK);
 	}
 	
-	// Create New Person
-	@PostMapping(value = "/people", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/person/{id}", produces = "application/json")
+	public ResponseEntity<People> getPeopleById(@PathVariable("id") String id) {
+		People person = peopleService.getPersonById(Integer.parseInt(id));
+		return new ResponseEntity<People>(person, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public PeopleDTO createPerson(@Valid @RequestBody PeopleDTO personDTO) {
 		peopleService.createPeople(personDTO);
 		
 		return personDTO;
+	}
+	
+	@PostMapping(value = "/person/addColour", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(value = HttpStatus.OK)
+	public PeopleDTO addRemovePersonColor(@Valid @RequestBody PeopleDTO personDTO) {
+		
+		peopleService.createPeople(personDTO);
+		
+		return personDTO;
+	}
+	
+	@GetMapping(value = "/colours", produces = "application/json")
+	public ResponseEntity<List<Colours>> getAllColours() {
+		List<Colours> list = coloursService.getAllColours();
+		return new ResponseEntity<List<Colours>>(list, HttpStatus.OK);
 	}
 	
 }
