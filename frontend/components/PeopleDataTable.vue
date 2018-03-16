@@ -19,15 +19,35 @@
                 <v-text-field label="Enabled" v-model="editedItem.enabled"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
+
+                <v-switch
+                        label="Authorised"
+                        v-model="editedItem.authorised"
+                        :input-value="editedItem.authorised"
+                        hide-details
+                ></v-switch>
+
                 <v-text-field label="Authorised" v-model="editedItem.authorised"></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6 md4 v-for="colour in editedItem.colours" :key="colour.id">
-
+              <v-flex xs12 sm6 md4>
                 <v-checkbox
-                        :label="colour.name"
+                  row
+                  v-model="cbxColours.cbxColourRed"
+                  label="Red"
+                  input-value="1"
                 ></v-checkbox>
-
-                <v-text-field label="Colours">{{ colour.name }}</v-text-field>
+                <v-checkbox
+                  row
+                  v-model="cbxColours.cbxColourGreen"
+                  label="Green"
+                  input-value="2"
+                ></v-checkbox>
+                <v-checkbox
+                  row
+                  v-model="cbxColours.cbxColourBlue"
+                  label="blue"
+                  input-value=""
+                ></v-checkbox>
               </v-flex>
             </v-layout>
           </v-container>
@@ -99,8 +119,39 @@ export default {
         { text: 'Actions', value: 'id', sortable: false }
       ],
       editedIndex: -1,
-      editedItem: [],
-      cbxColours: []
+      editedItem: [
+        {
+          id: 0,
+          firstName: '',
+          lastName: '',
+          enabled: '',
+          authorised: '',
+          colours: [
+            {
+              id: 1,
+              name: 'Red',
+              enabled: false
+            },
+            {
+              id: 2,
+              name: 'Green',
+              enabled: false
+            },
+            {
+              id: 3,
+              name: 'Blue',
+              enabled: false
+            }
+          ]
+        }
+      ],
+      cbxColours: [
+        {
+          cbxColourRed: false,
+          cbxColourGreen: false,
+          cbxColourBlue: false
+        }
+      ]
     }
   },
   computed: {
