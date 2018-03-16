@@ -20,5 +20,10 @@ public class ColoursServiceImpl implements ColoursService {
 	public List<Colours> getAllColours(){
 		return coloursDAO.getAllColours();
 	}
+
+	@Override
+	public List<Colours> getColoursByPersonId(int personId) {
+		return coloursDAO.getColoursByPersonId(personId);
+	}
 		
 }

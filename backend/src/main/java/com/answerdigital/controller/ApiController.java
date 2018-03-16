@@ -68,4 +68,9 @@ public class ApiController {
 		return new ResponseEntity<List<Colours>>(list, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/person/{id}/colours/", produces = "application/json")
+	public ResponseEntity<List<Colours>> getColoursByPersonId(@PathVariable("id") String id) {
+		List<Colours> list = coloursService.getColoursByPersonId(Integer.parseInt(id));
+		return new ResponseEntity<List<Colours>>(list, HttpStatus.OK);
+	}
 }

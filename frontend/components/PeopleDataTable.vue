@@ -10,32 +10,31 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12 sm6 md4>
-                <v-text-field label="Id"></v-text-field>
+                <v-text-field label="First Name" v-model="editedItem.firstName" readonly></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
-                <v-text-field label="Name"></v-text-field>
+                <v-text-field label="Last Name" v-model="editedItem.lastName" readonly></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
-                <v-text-field label="Palindrome"></v-text-field>
+                <v-text-field label="Enabled" v-model="editedItem.enabled"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md4>
-                <v-text-field label="Enabled"></v-text-field>
+                <v-text-field label="Authorised" v-model="editedItem.authorised"></v-text-field>
               </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="Valid"></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="Authorised"></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm6 md4>
-                <v-text-field label="Colours"></v-text-field>
+              <v-flex xs12 sm6 md4 v-for="colour in editedItem.colours" :key="colour.id">
+
+                <v-checkbox
+                        :label="colour.name"
+                ></v-checkbox>
+
+                <v-text-field label="Colours">{{ colour.name }}</v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="dialog = false">Cancel</v-btn>
           <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
         </v-card-actions>
       </v-card>
@@ -53,7 +52,9 @@
           <td>{{ person.item.firstName }} {{ person.item.lastName }}</td>
           <td>{{ person.item.lastName }}</td>
           <td>
-            <span>{{ reversedFullName(person.item.firstName + person.item.lastName) }}</span>
+            <span>{{ reverseName(person.item.firstName + person.item.lastName, person.item) }}</span>
+            <span v-if="!person.item.palindrome"><v-icon color="red">clear</v-icon></span>
+            <span v-else><v-icon color="green">done</v-icon></span>
           </td>
           <td>{{ person.item.enabled }}</td>
           <td>{{ person.item.valid }}</td>
@@ -65,7 +66,7 @@
             </template>
           </td>
           <td class="justify-center layout px-0">
-            <v-btn icon class="mx-0" @click="">
+            <v-btn icon class="mx-0" @click="editingItem(person.item)">
               <v-icon color="teal">edit</v-icon>
             </v-btn>
             <v-btn icon class="mx-0" @click="">
@@ -96,27 +97,43 @@ export default {
         { text: 'Authorised', value: 'authorised', sortable: false },
         { text: 'Colours', value: 'id', sortable: false },
         { text: 'Actions', value: 'id', sortable: false }
-      ]
+      ],
+      editedIndex: -1,
+      editedItem: [],
+      cbxColours: []
     }
   },
   computed: {
-    people () {
-      return this.$store.state.people.list
-    },
     formTitle () {
       return this.editedIndex === -1 ? 'New Person' : 'Edit Person'
     },
-    reversedFullName (item) {
-      // var fullName = this.people().firstName + this.people().lastName
-
-      // return this.reverseName(item)
-      return this.reverseName(item)
+    people () {
+      var list = this.$store.state.people.list
+      for (var i in list) {
+        var fullName = list[i].firstName + list[i].lastName
+        var reverse = this.reverseName(fullName)
+        var fullNameL = fullName.toLowerCase()
+        var reverseL = reverse.toLowerCase()
+        if (fullNameL === reverseL) {
+          this.$set(list[i], 'palindrome', true)
+        } else {
+          this.$set(list[i], 'palindrome', false)
+        }
+      }
+      return list
     }
   },
   methods: {
-    reverseName (item) {
-      var reverse = item.split('').reverse().join('')
+    reverseName (fullName) {
+      var reverse = fullName.split('').reverse().join('')
+
       return reverse
+    },
+    editingItem (person) {
+      this.editedIndex = this.people.indexOf(person)
+      this.editedItem = person
+      this.dialog = true
+      console.log(this.editedItem)
     }
   }
 }

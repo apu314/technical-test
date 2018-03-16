@@ -12,7 +12,8 @@ import {
   VToolbar,
   VDataTable,
   VDialog,
-  VTextField
+  VTextField,
+  VCheckBox
 } from 'vuetify'
 
 Vue.use(Vuetify, {
@@ -28,6 +29,7 @@ Vue.use(Vuetify, {
     VToolbar,
     VDataTable,
     VDialog,
-    VTextField
+    VTextField,
+    VCheckBox
   }
 })

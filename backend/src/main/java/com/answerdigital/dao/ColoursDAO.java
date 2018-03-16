@@ -3,10 +3,11 @@ package com.answerdigital.dao;
 import java.util.List;
 
 import com.answerdigital.entity.Colours;
+import com.answerdigital.entity.People;
 
 public interface ColoursDAO {
 	
 	public List<Colours> getAllColours();
-	//public People getColoursByPersonId(int id);
+	public List<Colours> getColoursByPersonId(int id);
 
 }
