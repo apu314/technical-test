@@ -12,9 +12,9 @@ public interface PeopleDAO {
     public void createPerson(People people);
     
     // le tengo que pasar el objeto persona con la lista de colores seteada
-    // void updatePeople(People people);
     // void deletePeople(int id);
     boolean peopleExists(String firstName, String lastName);
+	void updatePerson(People person);
     
     //boolean personColourExist(int personId, int colourId);
 	

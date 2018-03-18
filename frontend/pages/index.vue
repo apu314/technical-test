@@ -21,7 +21,6 @@ export default {
     }
     store.commit('people/setPeople', people)
   },
-
   data () {
     return {
       title: 'Technical-Test',
@@ -40,9 +39,6 @@ export default {
     PeopleDataTable
   },
   methods: {
-    showAddPerson () {
-      this.dialog = true
-    },
     async updateList () {
       let people
       try {

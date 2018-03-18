@@ -38,13 +38,14 @@ public class ApiController {
 		List<People> list = peopleService.getAllPeople();
 		return new ResponseEntity<List<People>>(list, HttpStatus.OK);
 	}
-	
+	// Not used because in the front I have a JSON Object with the complete list of people,
+	// and I can access it by the id for example.
 	@GetMapping(value = "/person/{id}", produces = "application/json")
 	public ResponseEntity<People> getPeopleById(@PathVariable("id") String id) {
 		People person = peopleService.getPersonById(Integer.parseInt(id));
 		return new ResponseEntity<People>(person, HttpStatus.OK);
 	}
-	
+	// Receives a people object (a person), saved as PeopleDTO->People (Entity).
 	@PostMapping(value = "/person", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public PeopleDTO createPerson(@Valid @RequestBody PeopleDTO personDTO) {

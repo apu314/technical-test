@@ -219,7 +219,16 @@ export default {
         }
       }
       this.dialog = true
-      console.log(this.editedItem.colours[colour])
+    },
+    async updateList () {
+      let people
+      try {
+        people = await this.$axios.get('/people').then(res => res.data)
+      } catch (error) {
+        return console.error(error)
+      }
+      this.$store.commit('people/setPeople', people)
+      this.dialog = false
     }
     /*
     createModifyPerson () {
