@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog v-model="dialog">
-      <v-btn color="primary" dark slot="activator" class="mb-2">New Person</v-btn>
+      <v-btn color="primary" dark slot="activator" @click="newPerson()" class="mb-2">New Person</v-btn>
       <v-card>
         <v-card-title>
           <span class="headline">{{ formTitle }}</span>
@@ -10,7 +10,7 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12 sm6 md6>
-                <v-text-field label="First Name" v-model="editedItem.firstName" readonly></v-text-field>
+                <v-text-field label="First Name" v-model="editedItem.firstName" :readonly="readonly"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md6>
                 <v-text-field label="Last Name" v-model="editedItem.lastName" readonly></v-text-field>
@@ -31,7 +31,7 @@
                         hide-details
                 ></v-switch>
               </v-flex>
-              <v-flex xs12 sm6 md4 v-for="(colour, index) in editedItem.colours">
+              <v-flex xs12 sm4 md4 v-for="(colour, index) in editedItem.colours">
                 <v-checkbox
                   row
                   v-model="editedItem.colours[index].enabled"
@@ -45,7 +45,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native.stop="closeDialog">Cancel</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="createModifyPerson">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -92,15 +92,15 @@
 <script>
 export default {
   props: {
-    editedItem: {
+    defaultPerson: {
       default: function () {
         return {
           id: 0,
           firstName: '',
           lastName: '',
-          enabled: '',
-          valid: '',
-          authorised: '',
+          enabled: false,
+          valid: false,
+          authorised: false,
           colours: [
             {
               id: 1,
@@ -136,18 +136,22 @@ export default {
         { text: 'Colours', value: 'id', sortable: false },
         { text: 'Actions', value: 'id', sortable: false }
       ],
-      editedIndex: -1
+      editedIndex: -1,
+      editedItem: Object.assign({}, this.defaultPerson)
     }
   },
   computed: {
     formTitle () {
       return this.editedIndex === -1 ? 'New Person' : 'Edit Person'
     },
-    /*
-    newPerson () {
-      return this.$options.propsData
+    readonly () {
+      if (this.editedIndex === -1) {
+        // Is Writable by disabling readonly prop
+        return false
+      } else {
+        return true
+      }
     },
-    */
     people () {
       var list = this.$store.state.people.list
 
@@ -155,6 +159,15 @@ export default {
     }
   },
   methods: {
+    newPerson () {
+      this.editedIndex = -1
+      this.editedItem = Object.assign({}, this.defaultPerson)
+      var editedColours = this.editedItem.colours
+      for (var colour in editedColours) {
+        this.editedItem.colours[colour].enabled = false
+      }
+      console.log(this.defaultPerson)
+    },
     closeDialog () {
       this.editedIndex = -1
       this.dialog = false
@@ -189,51 +202,40 @@ export default {
       this.editedItem.enabled = person.enabled
       this.editedItem.valid = person.valid
       this.editedItem.authorised = person.authorised
-      console.log(this.editedItem)
       var editedColours = this.editedItem.colours
       for (var colour in editedColours) {
         for (var pColour in person.colours) {
           if (editedColours[colour].name === person.colours[pColour].name) {
-            console.log('Colours match. \n editedColour: ' + editedColours[colour].name + '\n person: ' + person.colours[pColour].name)
+            // console.log('Colours match. \n editedColour: ' + editedColours[colour].name + '\n person: ' + person.colours[pColour].name)
             this.editedItem.colours[colour].enabled = true
-            console.log(this.editedItem.colours[colour])
+            // console.log(this.editedItem.colours[colour])
             break
           } else {
-            console.log('Colours doesn\'t match. \n editedColour: ' + editedColours[colour].name + '\n person: ' + person.colours[pColour].name)
+            // console.log('Colours doesn\'t match. \n editedColour: ' + editedColours[colour].name + '\n person: ' + person.colours[pColour].name)
             this.editedItem.colours[colour].enabled = false
-            console.log(this.editedItem.colours[colour])
+            // console.log(this.editedItem.colours[colour])
             continue
           }
         }
       }
-      // checking colours
-      // for (var editColour in this.editedItem.colours) {
-      // console.log(this.editedItem.colours)
-      // for (var personColour in person.colours) {
-      //   if (!editColour.id === person.colours[personColour].id) {
-      //     console.log(this.editedItem.colours[editColour.id])
-      //   } else {
-      //     this.editedItem.colours[editColour].id = person.colours[personColour].id
-      //     this.editedItem.colours[editColour.id].name = person.colours[personColour].name
-      //     this.editedItem.colours[editColour.id].enabled = person.colours[personColour].enabled
-      //   }
-      // }
-      // }
-      // this.editedItem = person
       this.dialog = true
-      console.log(this.$options.propsData)
+      console.log(this.editedItem.colours[colour])
     }
     /*
-    createModifyPerson (person) {
+    createModifyPerson () {
+      var person
+      if (editedIndex === -1) {
+
+      }
       axios.post('/person', {
         person: this.
       })
         .then(function (response) {
-            console.log(response);
+          console.log(response)
         })
         .catch(function (error) {
-            console.log(error);
-        });
+          console.log(error)
+        })
     }
     */
   }
