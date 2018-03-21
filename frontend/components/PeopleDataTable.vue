@@ -229,24 +229,33 @@ export default {
       }
       this.$store.commit('people/setPeople', people)
       this.dialog = false
-    }
-    /*
+    },
     createModifyPerson () {
       var person
-      if (editedIndex === -1) {
-
+      if (this.editedIndex === -1) {
+        app.$axios.post('/person', {
+          person: this.editedItem
+        })
+          .then(function (response) {
+            this.updateList()
+            console.log(response)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      } else {
+        app.$axios.put('/person', {
+          person: this.editedItem
+        })
+          .then(function (response) {
+            this.updateList()
+            console.log(response)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
       }
-      axios.post('/person', {
-        person: this.
-      })
-        .then(function (response) {
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
     }
-    */
   }
 }
 </script>

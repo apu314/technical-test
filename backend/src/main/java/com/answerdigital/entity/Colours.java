@@ -41,9 +41,9 @@ public class Colours implements Serializable {
 	
 	@ManyToMany(fetch = FetchType.LAZY,
             cascade = {
-                //CascadeType.PERSIST,
-                //CascadeType.MERGE,
-                CascadeType.ALL
+                // CascadeType.PERSIST,
+                CascadeType.MERGE
+                // CascadeType.ALL
             },
             mappedBy = "colours")
 	@JsonBackReference
@@ -74,6 +74,14 @@ public class Colours implements Serializable {
 
 	public void setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
+	}
+
+	public Set<People> getPeople() {
+		return people;
+	}
+
+	public void setPeople(Set<People> people) {
+		this.people = people;
 	}
 
 }

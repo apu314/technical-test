@@ -1,9 +1,13 @@
 package com.answerdigital.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
-import com.answerdigital.entity.Colours;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = ColoursDTO.class)
 public class PeopleDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -14,7 +18,7 @@ public class PeopleDTO implements Serializable {
 	private boolean isAuthorised;
 	private boolean isValid;
 	private boolean isEnabled;
-	private Colours colours;
+	private List<ColoursDTO> colours;
 	
 	/**
 	 * Getters & Setters
@@ -55,10 +59,10 @@ public class PeopleDTO implements Serializable {
 	public void setEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
-	public Colours getColours() {
+	public List<ColoursDTO> getColours() {
 		return colours;
 	}
-	public void setColours(Colours colours) {
+	public void setColours(List<ColoursDTO> colours) {
 		this.colours = colours;
 	}
 		

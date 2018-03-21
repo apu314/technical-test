@@ -1,7 +1,9 @@
 package com.answerdigital.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -15,7 +17,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name = "people")
-// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class People implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -45,16 +47,15 @@ public class People implements Serializable {
 	
 	@ManyToMany(fetch = FetchType.LAZY,
             cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE,
-            			// CascadeType.ALL
+                    // CascadeType.PERSIST,
+                    CascadeType.MERGE, // If colour exist don create it, just add that colour to the person
                 })
     @JoinTable(name = "colours_people",
             joinColumns = { @JoinColumn(name = "person_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "colour_id", referencedColumnName = "id") })
-	@JsonManagedReference
+	//@JsonManagedReference
 	//@JsonBackReference
-	private Set<Colours> colours = new HashSet<Colours>();
+	private List<Colours> colours = new ArrayList<Colours>();
 
 	
 
@@ -109,11 +110,11 @@ public class People implements Serializable {
 		this.isEnabled = isEnabled;
 	}
 
-	public Set<Colours> getColours() {
+	public List<Colours> getColours() {
 		return colours;
 	}
 
-	public void setColours(Set<Colours> colours) {
+	public void setColours(List<Colours> colours) {
 		this.colours = colours;
 	}
 	
