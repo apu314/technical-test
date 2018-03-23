@@ -60,15 +60,13 @@
       <template slot="items" slot-scope="person">
         <tr>
           <td>{{ person.item.id }}</td>
-          <td>{{ setFullName(person.item.firstName, person.item.lastName) }}</td>
-          <td>{{ person.item.lastName }}</td>
+          <td>{{ person.item.firstName + ' ' + person.item.lastName }}</td>
           <td>
             <span v-if="!palindrome(person.item.firstName, person.item.lastName)"><v-icon color="red">clear</v-icon></span>
             <span v-else><v-icon color="green">done</v-icon></span>
             <span :v-model="reverseName(person.item.firstName, person.item.lastName)">{{ reverseName(person.item.firstName, person.item.lastName) }}</span>
           </td>
           <td>{{ person.item.enabled }}</td>
-          <td>{{ person.item.valid }}</td>
           <td>{{ person.item.authorised }}</td>
           <td>
             <template v-for="(colour, index) in person.item.colours">
@@ -129,10 +127,8 @@ export default {
       headers: [
         { text: 'Id', value: 'id', align: 'left' },
         { text: 'Name', value: 'name', sortable: false },
-        { text: 'Last Name', value: 'lastName', sortable: false },
         { text: 'Palindrome', sortable: false },
         { text: 'Enabled', value: 'enabled', sortable: false },
-        { text: 'Valid', value: 'valid', sortable: false },
         { text: 'Authorised', value: 'authorised', sortable: false },
         { text: 'Colours', value: 'id', sortable: false },
         { text: 'Actions', value: 'id', sortable: false }
