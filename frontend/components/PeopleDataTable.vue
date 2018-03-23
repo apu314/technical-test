@@ -13,7 +13,7 @@
                 <v-text-field label="First Name" v-model="editedItem.firstName" :readonly="readonly"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md6>
-                <v-text-field label="Last Name" v-model="editedItem.lastName" readonly></v-text-field>
+                <v-text-field label="Last Name" v-model="editedItem.lastName" :readonly="readonly"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md6>
                 <v-switch
@@ -31,7 +31,7 @@
                         hide-details
                 ></v-switch>
               </v-flex>
-              <v-flex xs12 sm4 md4 v-for="(colour, index) in editedItem.colours">
+              <v-flex xs12 sm4 md4 v-for="(colour, index) in editedItem.colours" :key="index">
                 <v-checkbox
                   row
                   v-model="editedItem.colours[index].enabled"
@@ -51,20 +51,21 @@
     </v-dialog>
 
     <v-data-table
+        :key="showDataTable"
       :headers="headers"
-      :items="people"
+      :items.sync="people"
       hide-actions
       class="elevation-1"
     >
       <template slot="items" slot-scope="person">
         <tr>
           <td>{{ person.item.id }}</td>
-          <td>{{ setfullName(person.item.firstName, person.item.lastName) }}</td>
+          <td>{{ setFullName(person.item.firstName, person.item.lastName) }}</td>
           <td>{{ person.item.lastName }}</td>
           <td>
             <span v-if="!palindrome(person.item.firstName, person.item.lastName)"><v-icon color="red">clear</v-icon></span>
             <span v-else><v-icon color="green">done</v-icon></span>
-            <span :v-model="reverseName(person.item.firstName + person.item.lastName, person.item)">{{ reverseName(person.item.firstName + person.item.lastName, person.item) }}</span>
+            <span :v-model="reverseName(person.item.firstName, person.item.lastName)">{{ reverseName(person.item.firstName, person.item.lastName) }}</span>
           </td>
           <td>{{ person.item.enabled }}</td>
           <td>{{ person.item.valid }}</td>
@@ -137,7 +138,8 @@ export default {
         { text: 'Actions', value: 'id', sortable: false }
       ],
       editedIndex: -1,
-      editedItem: Object.assign({}, this.defaultPerson)
+      editedItem: Object.assign({}, this.defaultPersonConst()),
+      showDataTable: true
     }
   },
   computed: {
@@ -159,9 +161,49 @@ export default {
     }
   },
   methods: {
+    defaultPersonConst () {
+      const defaultPerson = {
+        id: 0,
+        firstName: '',
+        lastName: '',
+        enabled: false,
+        valid: false,
+        authorised: false,
+        colours: [
+          {
+            id: 1,
+            name: 'Blue',
+            enabled: false
+          },
+          {
+            id: 2,
+            name: 'Red',
+            enabled: false
+          },
+          {
+            id: 3,
+            name: 'Green',
+            enabled: false
+          }
+        ]
+      }
+      return defaultPerson
+    },
+    // To re-render a component.
+    rerenderDataTable () {
+      this.showDataTable = false
+      this.$nextTick(() => {
+        // this.updateList()
+        this.showDataTable = true
+        console.log('re-render start')
+        this.$nextTick(() => {
+          console.log('re-render end')
+        })
+      })
+    },
     newPerson () {
       this.editedIndex = -1
-      this.editedItem = Object.assign({}, this.defaultPerson)
+      this.editedItem = Object.assign({}, this.defaultPersonConst())
       var editedColours = this.editedItem.colours
       for (var colour in editedColours) {
         this.editedItem.colours[colour].enabled = false
@@ -170,21 +212,22 @@ export default {
     },
     closeDialog () {
       this.editedIndex = -1
+      this.editedItem = Object.assign({}, this.defaultPerson)
       this.dialog = false
       console.log(this.editedItem)
     },
-    setfullName (firstName, lastName) {
-      this.fullName = firstName + lastName
-      return this.fullName
+    setFullName (firstName, lastName) {
+      var fullName = firstName + lastName
+      return fullName
     },
-    reverseName () {
-      var reverse = this.fullName.split('').reverse().join('')
-
+    reverseName (firstName, lastName) {
+      var fullName = firstName + lastName
+      var reverse = fullName.split('').reverse().join('')
       return reverse
     },
     palindrome (firstName, lastName) {
       var fullName = firstName + lastName
-      var reverse = this.reverseName(fullName)
+      var reverse = this.reverseName(firstName, lastName)
       var fullNameL = fullName.toLowerCase()
       var reverseL = reverse.toLowerCase()
       if (fullNameL === reverseL) {
@@ -196,6 +239,7 @@ export default {
     editingItem (person) {
       this.editedIndex = this.people.indexOf(person)
 
+      this.editedItem = Object.assign({}, this.defaultPersonConst())
       this.editedItem.id = person.id
       this.editedItem.firstName = person.firstName
       this.editedItem.lastName = person.lastName
@@ -220,22 +264,26 @@ export default {
       }
       this.dialog = true
     },
-    async updateList () {
+    updateList () {
       let people
       try {
-        people = await this.$axios.get('/people').then(res => res.data)
+        people = this.$axios.get('/people').then(res => res.data)
       } catch (error) {
         return console.error(error)
       }
       this.$store.commit('people/setPeople', people)
-      this.dialog = false
     },
     createModifyPerson () {
-      var person
+      for (var colour in this.editedItem.colours) {
+        if (!this.editedItem.colours[colour].enabled) {
+          console.log(this.editedItem.colours)
+          this.editedItem.colours.splice(colour, 1)
+          console.log(this.editedItem.colours)
+        }
+      }
+      var person = this.editedItem
       if (this.editedIndex === -1) {
-        app.$axios.post('/person', {
-          person: this.editedItem
-        })
+        this.$axios.post('/person', person)
           .then(function (response) {
             this.updateList()
             console.log(response)
@@ -244,9 +292,7 @@ export default {
             console.log(error)
           })
       } else {
-        app.$axios.put('/person', {
-          person: this.editedItem
-        })
+        this.$axios.put('/person', person)
           .then(function (response) {
             this.updateList()
             console.log(response)
@@ -255,6 +301,10 @@ export default {
             console.log(error)
           })
       }
+      this.editedItem = this.defaultPersonConst()
+      this.rerenderDataTable()
+      this.dialog = false
+      console.log(this.editedItem)
     }
   }
 }
